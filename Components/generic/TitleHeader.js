@@ -1,30 +1,21 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import {Text, SafeAreaView, StyleSheet} from 'react-native';
-import {
-  responsiveHeight,
-  responsiveFontSize,
-} from 'react-native-responsive-dimensions';
+import {responsiveFontSize} from 'react-native-responsive-dimensions';
 
 class TitleHeader extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
-      <Fragment>
-        <SafeAreaView style={styles.container}>
-          <Text style={styles.titleText}>{this.props.title}</Text>
-        </SafeAreaView>
-      </Fragment>
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.titleText}>{this.props.title}</Text>
+      </SafeAreaView>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: '#DCDCDC',
-    height: responsiveHeight(22),
     justifyContent: 'center',
   },
   titleText: {
