@@ -1,5 +1,9 @@
 import React, {Component} from 'react';
 import {Text, View, StyleSheet} from 'react-native';
+import {
+  responsiveHeight,
+  responsiveFontSize,
+} from 'react-native-responsive-dimensions';
 
 class Title extends Component {
   constructor(props) {
@@ -9,7 +13,7 @@ class Title extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>{this.props.title}</Text>
+        <Text style={styles.titleText}>{this.props.title}</Text>
       </View>
     );
   }
@@ -17,8 +21,13 @@ class Title extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'grey',
-    // height: 22,
+    backgroundColor: '#DCDCDC',
+    height: responsiveHeight(22),
+    justifyContent: 'center',
+  },
+  titleText: {
+    textAlign: 'center',
+    fontSize: responsiveFontSize(4),
   },
 });
 
