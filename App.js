@@ -28,7 +28,7 @@ import Title from './Components/Title';
 const App: () => React$Node = () => {
   return (
     <SafeAreaView>
-      <Title title="Welcome to Johnny's smart switch! "/>
+      <Title title="Welcome to Johnny's smart switch! " />
     </SafeAreaView>
   );
 };
