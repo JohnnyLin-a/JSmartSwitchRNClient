@@ -1,29 +1,36 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {TouchableHighlight, Text, StyleSheet} from 'react-native';
+import {TouchableHighlight, Text, StyleSheet, View} from 'react-native';
 import {responsiveFontSize} from 'react-native-responsive-dimensions';
 
 export default class ColoredButton extends Component {
   state = {
-    isBusy: false,
+    disabled: false,
     buttonText: '',
   };
 
   onPressButton = () => {
-    this.setState({isBusy: true}, async () => {
-      const response = await this.props.onPress();
-      this.setState({isBusy: false});
-    });
+    // this.setState({disabled: true}, async () => {
+    //   const response = await this.props.onPress();
+    //   this.setState({disabled: false});
+    // });
+    this.props.onPress();
   };
 
   render() {
     return (
-      <TouchableHighlight
-        style={[this.props.style, styles.genericTouchable]}
-        onPress={this.props.onPressButton}>
-        <Text style={styles.textStyle}>
-          {this.state.isBusy ? this.state.buttonText : this.props.buttonText}
-        </Text>
-      </TouchableHighlight>
+      <View>
+        <TouchableHighlight
+          style={[this.props.style, styles.genericTouchable]}
+          disabled={this.state.disabled}
+          onPress={this.onPressButton}>
+          <Text style={[styles.textStyle, this.props.textStyle]}>
+            {this.state.disabled
+              ? this.state.buttonText
+              : this.props.buttonText}
+          </Text>
+        </TouchableHighlight>
+      </View>
     );
   }
 }
