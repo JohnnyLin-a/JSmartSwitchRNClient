@@ -1,20 +1,22 @@
-import React, {Component} from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import React, {Component, Fragment} from 'react';
+import {Text, SafeAreaView, StyleSheet} from 'react-native';
 import {
   responsiveHeight,
   responsiveFontSize,
 } from 'react-native-responsive-dimensions';
 
-class Title extends Component {
+class TitleHeader extends Component {
   constructor(props) {
     super(props);
   }
 
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.titleText}>{this.props.title}</Text>
-      </View>
+      <Fragment>
+        <SafeAreaView style={styles.container}>
+          <Text style={styles.titleText}>{this.props.title}</Text>
+        </SafeAreaView>
+      </Fragment>
     );
   }
 }
@@ -31,4 +33,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Title;
+export default TitleHeader;
