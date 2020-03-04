@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View} from 'react-native';
-import TitleHeader from './TitleHeader';
+import TitleHeader from './generic/TitleHeader';
 
 export default class SmartSwitch extends Component {
   render() {
