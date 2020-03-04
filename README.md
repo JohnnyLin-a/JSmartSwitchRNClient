@@ -7,7 +7,7 @@ This is the React-Native client for my Smart Switch.
 
 Prerequisites:
   - NodeJS 12.x LTS
-  - Yarn v2
+  - Yarn 1.x
 
 
 Versions:
