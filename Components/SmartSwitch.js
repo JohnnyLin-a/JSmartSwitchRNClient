@@ -7,6 +7,11 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
+import {
+  openComputer,
+  openLights,
+  closeLights,
+} from '../Helpers/Network/ApiRequest';
 
 export default class SmartSwitch extends Component {
   render() {
@@ -20,25 +25,19 @@ export default class SmartSwitch extends Component {
           <ColoredButton
             style={[{backgroundColor: '#ffbf00'}, styles.buttonGeneric]}
             buttonText="Open Computer!"
-            onPress={() => {
-              ToastAndroid.show('onPress1', ToastAndroid.SHORT);
-            }}
+            onPress={openComputer}
           />
           <ColoredButton
             style={[{backgroundColor: 'green'}, styles.buttonGeneric]}
             textStyle={{color: 'white'}}
             buttonText="Open lights!"
-            onPress={() => {
-              ToastAndroid.show('onPress2', ToastAndroid.SHORT);
-            }}
+            onPress={openLights}
           />
           <ColoredButton
             style={[{backgroundColor: 'red'}, styles.buttonGeneric]}
             textStyle={{color: 'white'}}
             buttonText="Close lights!"
-            onPress={() => {
-              ToastAndroid.show('onPress3', ToastAndroid.SHORT);
-            }}
+            onPress={closeLights}
           />
         </View>
       </SafeAreaView>
