@@ -1,42 +1,14 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+import {View} from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-import Title from './Components/Title';
+import SmartSwitch from './Components/SmartSwitch';
 
 const App: () => React$Node = () => {
   return (
-    <SafeAreaView>
-      <Title title="Welcome to Johnny's smart switch! " />
-    </SafeAreaView>
+    <View>
+      <SmartSwitch />
+    </View>
   );
 };
-
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-});
 
 export default App;
