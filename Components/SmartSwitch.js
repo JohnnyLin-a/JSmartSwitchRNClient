@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {View, SafeAreaView, StyleSheet, ToastAndroid} from 'react-native';
+import {View, SafeAreaView, StyleSheet} from 'react-native';
 import TitleHeader from './generic/TitleHeader';
 import ColoredButton from './generic/ColoredButton';
 import {
@@ -14,6 +14,30 @@ import {
 } from '../Helpers/Network/ApiRequest';
 
 export default class SmartSwitch extends Component {
+  buttonsData = [
+    {
+      buttonText: 'Open computer!',
+      style: {backgroundColor: '#ffc107'},
+      styleDisabled: {backgroundColor: '#ffc107'},
+      textStyle: {color: 'black'},
+      onPress: openComputer,
+    },
+    {
+      buttonText: 'Open lights!',
+      style: {backgroundColor: '#28a745'},
+      styleDisabled: {backgroundColor: '#28a745'},
+      textStyle: {color: 'white'},
+      onPress: openLights,
+    },
+    {
+      buttonText: 'Close lights!',
+      style: {backgroundColor: '#dc3545'},
+      styleDisabled: {backgroundColor: '#dc3545'},
+      textStyle: {color: 'white'},
+      onPress: closeLights,
+    },
+  ];
+
   render() {
     return (
       <SafeAreaView style={styles.mainContainer}>
@@ -22,23 +46,17 @@ export default class SmartSwitch extends Component {
         </View>
 
         <View style={[{flex: 8}, styles.buttonsContainer]}>
-          <ColoredButton
-            style={[{backgroundColor: '#ffbf00'}, styles.buttonGeneric]}
-            buttonText="Open Computer!"
-            onPress={openComputer}
-          />
-          <ColoredButton
-            style={[{backgroundColor: 'green'}, styles.buttonGeneric]}
-            textStyle={{color: 'white'}}
-            buttonText="Open lights!"
-            onPress={openLights}
-          />
-          <ColoredButton
-            style={[{backgroundColor: 'red'}, styles.buttonGeneric]}
-            textStyle={{color: 'white'}}
-            buttonText="Close lights!"
-            onPress={closeLights}
-          />
+          {this.buttonsData.map(buttonData => {
+            return (
+              <ColoredButton
+                style={[buttonData.style, styles.buttonGeneric]}
+                styleDisabled={[buttonData.styleDisabled, styles.buttonGeneric]}
+                buttonText={buttonData.buttonText}
+                textStyle={buttonData.textStyle}
+                onPress={buttonData.onPress}
+              />
+            );
+          })}
         </View>
       </SafeAreaView>
     );
