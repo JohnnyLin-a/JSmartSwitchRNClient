@@ -1,6 +1,5 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {TouchableHighlight, Text, StyleSheet, View} from 'react-native';
+import {TouchableWithoutFeedback, Text, StyleSheet, View} from 'react-native';
 import {responsiveFontSize} from 'react-native-responsive-dimensions';
 
 export default class ColoredButton extends Component {
@@ -10,18 +9,16 @@ export default class ColoredButton extends Component {
   };
 
   onPressButton = () => {
-    // this.setState({disabled: true}, async () => {
-    //   const response = await this.props.onPress();
-    //   this.setState({disabled: false});
-    // });
-    this.props.onPress();
+    this.setState({disabled: true}, async () => {
+      const response = await this.props.onPress();
+      this.setState({disabled: false});
+    });
   };
 
   render() {
     return (
-      <View>
-        <TouchableHighlight
-          style={[this.props.style, styles.genericTouchable]}
+      <View style={[this.props.style, styles.genericTouchable]}>
+        <TouchableWithoutFeedback
           disabled={this.state.disabled}
           onPress={this.onPressButton}>
           <Text style={[styles.textStyle, this.props.textStyle]}>
@@ -29,7 +26,7 @@ export default class ColoredButton extends Component {
               ? this.state.buttonText
               : this.props.buttonText}
           </Text>
-        </TouchableHighlight>
+        </TouchableWithoutFeedback>
       </View>
     );
   }
