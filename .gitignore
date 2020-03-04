@@ -63,3 +63,6 @@ buck-out/
 !.yarn/releases
 !.yarn/plugins
 .pnp.*
+
+# secrets
+.env
