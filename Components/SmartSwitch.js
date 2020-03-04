@@ -3,6 +3,10 @@ import React, {Component} from 'react';
 import {View, SafeAreaView, StyleSheet, ToastAndroid} from 'react-native';
 import TitleHeader from './generic/TitleHeader';
 import ColoredButton from './generic/ColoredButton';
+import {
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
 
 export default class SmartSwitch extends Component {
   render() {
@@ -14,10 +18,26 @@ export default class SmartSwitch extends Component {
 
         <View style={[{flex: 8}, styles.buttonsContainer]}>
           <ColoredButton
-            style={{backgroundColor: 'yellow'}}
+            style={[{backgroundColor: '#ffbf00'}, styles.buttonGeneric]}
             buttonText="Open Computer!"
             onPress={() => {
-              ToastAndroid.show('onPress', ToastAndroid.SHORT);
+              ToastAndroid.show('onPress1', ToastAndroid.SHORT);
+            }}
+          />
+          <ColoredButton
+            style={[{backgroundColor: 'green'}, styles.buttonGeneric]}
+            textStyle={{color: 'white'}}
+            buttonText="Open lights!"
+            onPress={() => {
+              ToastAndroid.show('onPress2', ToastAndroid.SHORT);
+            }}
+          />
+          <ColoredButton
+            style={[{backgroundColor: 'red'}, styles.buttonGeneric]}
+            textStyle={{color: 'white'}}
+            buttonText="Close lights!"
+            onPress={() => {
+              ToastAndroid.show('onPress3', ToastAndroid.SHORT);
             }}
           />
         </View>
@@ -33,5 +53,11 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     justifyContent: 'center',
+    marginHorizontal: responsiveWidth(15),
+  },
+  buttonGeneric: {
+    borderRadius: 15,
+    marginVertical: responsiveHeight(3),
+    paddingVertical: responsiveHeight(1),
   },
 });
