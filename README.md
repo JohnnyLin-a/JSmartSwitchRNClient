@@ -12,3 +12,7 @@ Prerequisites:
 
 Versions:
   - React-Native v0.61
+  
+Build instructions (Android):
+  - under app/gradle.properties, add store and key password
+  - execute "gradlew assembleRelease" in android folder
