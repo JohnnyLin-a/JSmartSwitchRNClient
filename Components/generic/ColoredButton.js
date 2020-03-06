@@ -19,6 +19,12 @@ import FontAwesome, {
 } from 'react-native-fontawesome';
 import FontAwesomeSpin from './FontAwesomeSpin';
 
+/*
+  I am fully aware that this code is not clean yet.
+  I can do a better job to clean it one of these upcoming days.
+  Will have to rework and separate the modal in a different component and more.
+  May need to separate animations too in the future.
+*/
 export default class ColoredButton extends Component {
   state = {
     disabled: false,
@@ -101,14 +107,14 @@ export default class ColoredButton extends Component {
 
   render() {
     return (
-      <View
-        style={[
-          this.state.disabled ? this.props.styleDisabled : this.props.style,
-          styles.genericTouchable,
-        ]}>
-        <TouchableWithoutFeedback
-          disabled={this.state.disabled}
-          onPress={this.onPressButton}>
+      <TouchableWithoutFeedback
+        disabled={this.state.disabled}
+        onPress={this.onPressButton}>
+        <View
+          style={[
+            this.state.disabled ? this.props.styleDisabled : this.props.style,
+            styles.genericTouchable,
+          ]}>
           {this.state.disabled ? (
             this.state.disabledComponent
           ) : (
@@ -116,52 +122,60 @@ export default class ColoredButton extends Component {
               {this.props.buttonText}
             </Text>
           )}
-        </TouchableWithoutFeedback>
-        <Modal
-          transparent
-          animationType="fade"
-          visible={this.state.modalVisible}
-          onRequestClose={() => {
-            this.setState({modalVisible: false});
-          }}>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: '#00000080',
-              justifyContent: 'center',
+          <Modal
+            transparent
+            animationType="fade"
+            visible={this.state.modalVisible}
+            onRequestClose={() => {
+              this.setState({modalVisible: false});
             }}>
-            <View style={styles.modalStyle}>
-              <View
-                style={{
-                  flex: 4,
-                  justifyContent: 'center',
-                  backgroundColor: 'white',
-                  borderRadius: 15,
-                  marginTop: '5%',
-                  marginHorizontal: '5%',
-                }}>
-                <Text style={styles.textStyle}>{this.state.errorText}</Text>
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: '#ffc107',
-                  justifyContent: 'center',
-                  borderRadius: 15,
-                  margin: '5%',
-                }}>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: '#00000080',
+                justifyContent: 'center',
+              }}>
+              <View style={styles.modalStyle}>
+                <View
+                  style={{
+                    flex: 4,
+                    justifyContent: 'center',
+                    backgroundColor: 'white',
+                    borderRadius: 15,
+                    marginTop: '5%',
+                    marginHorizontal: '5%',
+                  }}>
+                  <Text style={styles.textStyle}>{this.state.errorText}</Text>
+                </View>
+
                 <TouchableWithoutFeedback
                   style={[styles.genericTouchable]}
                   onPress={() => {
                     this.setState({modalVisible: false});
                   }}>
-                  <Text style={styles.textStyle}>Dismiss</Text>
+                  <View
+                    style={{
+                      flex: 1,
+                      backgroundColor: '#ffc107',
+                      borderRadius: 15,
+                      marginHorizontal: '5%',
+                      marginVertical: '5%',
+                      justifyContent: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: responsiveFontSize(2.5),
+                        textAlign: 'center',
+                      }}>
+                      Dismiss
+                    </Text>
+                  </View>
                 </TouchableWithoutFeedback>
               </View>
             </View>
-          </View>
-        </Modal>
-      </View>
+          </Modal>
+        </View>
+      </TouchableWithoutFeedback>
     );
   }
 }
