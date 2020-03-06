@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import {TouchableWithoutFeedback, Text, StyleSheet, View} from 'react-native';
-import {responsiveFontSize} from 'react-native-responsive-dimensions';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+} from 'react-native-responsive-dimensions';
 import FontAwesome, {
   SolidIcons,
   RegularIcons,
@@ -25,12 +28,60 @@ export default class ColoredButton extends Component {
           />
         ),
       },
-      async () => {
-        const response = await this.props.onPress();
-        console.log('response', response);
-        if (response.data.success) {
-          this.setState({disabled: false});
-        }
+      () => {
+        const serverErrorTimeout = setTimeout(() => {
+          this.setState(
+            {
+              disabledComponent: (
+                <Text style={[styles.textStyle, this.props.textStyle]}>
+                  {'Server error '}
+                  <FontAwesome icon={SolidIcons.frown} />
+                </Text>
+              ),
+            },
+            () => {
+              setTimeout(() => {
+                this.setState({disabled: false});
+              }, 1000);
+            },
+          );
+        }, 2000);
+
+        this.props
+          .onPress()
+          .then(response => {
+            console.log('response', response);
+            response.status === 200
+              ? this.setState(
+                  {
+                    disabledComponent: (
+                      <Text style={[styles.textStyle, this.props.textStyle]}>
+                        <FontAwesome icon={SolidIcons.check} />
+                      </Text>
+                    ),
+                  },
+                  () => {
+                    clearTimeout(serverErrorTimeout);
+                  },
+                )
+              : this.setState({
+                  disabledComponent: (
+                    <Text style={[styles.textStyle, this.props.textStyle]}>
+                      <FontAwesome icon={SolidIcons.times} />
+                    </Text>
+                  ),
+                });
+            setTimeout(() => {
+              this.setState({disabled: false});
+            }, 1000);
+          })
+          .catch(error => {
+            console.log('error', error);
+          });
+        // console.log('response', response);
+        // if (response.success) {
+        //   this.setState({disabled: false});
+        // }
       },
     );
   };
@@ -61,6 +112,7 @@ export default class ColoredButton extends Component {
 const styles = StyleSheet.create({
   genericTouchable: {
     justifyContent: 'center',
+    height: responsiveHeight(10),
   },
   textStyle: {
     fontSize: responsiveFontSize(3),
