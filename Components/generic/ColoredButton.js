@@ -6,6 +6,7 @@ import {
   StyleSheet,
   View,
   Modal,
+  ToastAndroid,
 } from 'react-native';
 import {
   responsiveFontSize,
@@ -34,75 +35,76 @@ export default class ColoredButton extends Component {
   };
 
   onPressButton = () => {
-    this.setState(
-      {
-        disabled: true,
-        disabledComponent: (
-          <FontAwesomeSpin
-            style={[styles.textStyle, this.props.textStyle]}
-            icon={SolidIcons.syncAlt}
-          />
-        ),
-      },
-      () => {
-        // const serverErrorTimeout = setTimeout(() => {
-        //   this.setState(
-        //     {
-        //       disabledComponent: (
-        //         <Text style={[styles.textStyle, this.props.textStyle]}>
-        //           {'Server error '}
-        //           <FontAwesome icon={SolidIcons.frown} />
-        //         </Text>
-        //       ),
-        //     },
-        //     () => {
-        //       setTimeout(() => {
-        //         this.setState({disabled: false});
-        //       }, 1000);
-        //     },
-        //   );
-        // }, 2000);
-
-        this.props
-          .onPress()
-          .then(response => {
-            console.log('response', response);
-            response.status === 200
-              ? this.setState(
-                  {
-                    disabledComponent: (
-                      <Text style={[styles.textStyle, this.props.textStyle]}>
-                        <FontAwesome icon={SolidIcons.check} />
-                      </Text>
-                    ),
-                  },
-                  () => {
-                    // clearTimeout(serverErrorTimeout);
-                  },
-                )
-              : this.setState({
-                  disabledComponent: (
-                    <Text style={[styles.textStyle, this.props.textStyle]}>
-                      <FontAwesome icon={SolidIcons.times} />
-                    </Text>
-                  ),
-                  errorText: 'Error status ' + response.status,
-                  modalVisible: true,
-                });
-            setTimeout(() => {
-              this.setState({disabled: false});
-            }, 1000);
-          })
-          .catch(error => {
-            console.log('error', error);
-            this.setState({errorText: error, modalVisible: true});
-          });
-        // console.log('response', response);
-        // if (response.success) {
-        //   this.setState({disabled: false});
-        // }
-      },
-    );
+    // this.setState(
+    //   {
+    //     disabled: true,
+    //     disabledComponent: (
+    //       <FontAwesomeSpin
+    //         style={[styles.textStyle, this.props.textStyle]}
+    //         icon={SolidIcons.syncAlt}
+    //       />
+    //     ),
+    //   },
+    //   () => {
+    // const serverErrorTimeout = setTimeout(() => {
+    //   this.setState(
+    //     {
+    //       disabledComponent: (
+    //         <Text style={[styles.textStyle, this.props.textStyle]}>
+    //           {'Server error '}
+    //           <FontAwesome icon={SolidIcons.frown} />
+    //         </Text>
+    //       ),
+    //     },
+    //     () => {
+    //       setTimeout(() => {
+    //         this.setState({disabled: false});
+    //       }, 1000);
+    //     },
+    //   );
+    // }, 2000);
+    // this.props
+    //   .onPress()
+    //   .then(response => {
+    //     console.log('response', response);
+    //     response.status === 200
+    //       ? this.setState(
+    //           {
+    //             disabledComponent: (
+    //               <Text style={[styles.textStyle, this.props.textStyle]}>
+    //                 <FontAwesome icon={SolidIcons.check} />
+    //               </Text>
+    //             ),
+    //           },
+    //           () => {
+    //             // clearTimeout(serverErrorTimeout);
+    //           },
+    //         )
+    //       : this.setState({
+    //           disabledComponent: (
+    //             <Text style={[styles.textStyle, this.props.textStyle]}>
+    //               <FontAwesome icon={SolidIcons.times} />
+    //             </Text>
+    //           ),
+    //           errorText: 'Error status ' + response.status,
+    //           modalVisible: true,
+    //         });
+    //     setTimeout(() => {
+    //       this.setState({disabled: false});
+    //     }, 1000);
+    //   })
+    //   .catch(error => {
+    //     console.log('error', error);
+    //     this.setState({errorText: error, modalVisible: true});
+    //   });
+    // console.log('response', response);
+    // if (response.success) {
+    //   this.setState({disabled: false});
+    // }
+    // },
+    // );
+    // ToastAndroid.show('onPress', ToastAndroid.SHORT);
+    this.props.onPress();
   };
 
   render() {
