@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {View, SafeAreaView, StyleSheet, Text} from 'react-native';
+import {View, SafeAreaView, StyleSheet, Text, ToastAndroid} from 'react-native';
 import TitleHeader from './generic/TitleHeader';
 import ColoredButton from './generic/ColoredButton';
 import {
@@ -13,46 +13,33 @@ import {
   closeLights,
 } from '../Helpers/Network/ApiRequest';
 import FontAwesome, {SolidIcons} from 'react-native-fontawesome';
+import Config from 'react-native-config';
+import {WebView} from 'react-native-webview';
+import ColorfulModal from './generic/ColorfulModal';
 
 export default class SmartSwitch extends Component {
-  buttonsData = [
-    {
-      buttonText: (
-        <Text>
-          <FontAwesome icon={SolidIcons.powerOff} />
-          {' Open computer!'}
-        </Text>
-      ),
-      style: {backgroundColor: '#ffc107'},
-      styleDisabled: {backgroundColor: '#ffc10765'},
-      textStyle: {color: 'black'},
-      onPress: openComputer,
-    },
-    {
-      buttonText: (
-        <Text>
-          <FontAwesome icon={SolidIcons.eye} />
-          {' Open lights!'}
-        </Text>
-      ),
-      style: {backgroundColor: '#28a745'},
-      styleDisabled: {backgroundColor: '#28a74565'},
-      textStyle: {color: 'white'},
-      onPress: openLights,
-    },
-    {
-      buttonText: (
-        <Text>
-          <FontAwesome icon={SolidIcons.eyeSlash} />
-          {' Close lights!'}
-        </Text>
-      ),
-      style: {backgroundColor: '#dc3545'},
-      styleDisabled: {backgroundColor: '#dc354565'},
-      textStyle: {color: 'white'},
-      onPress: closeLights,
-    },
-  ];
+  state = {wvURI: null, mountWV: false};
+
+  openComputer = () => {
+    this.setState({
+      wvURI: Config.SERVER_URL + 'api/v1/openMyComputer.php',
+      mountWV: true,
+    });
+  };
+
+  openLights = () => {
+    this.setState({
+      wvURI: Config.SERVER_URL + 'api/v1/controlLights.php' + '?control=open',
+      mountWV: true,
+    });
+  };
+
+  closeLights = () => {
+    this.setState({
+      wvURI: Config.SERVER_URL + 'api/v1/controlLights.php' + '?control=close',
+      mountWV: true,
+    });
+  };
 
   render() {
     return (
@@ -82,9 +69,64 @@ export default class SmartSwitch extends Component {
             );
           })}
         </View>
+        {this.state.mountWV && (
+          <View style={{height: 0}}>
+            <WebView
+              ref={ref => (this.webview = ref)}
+              source={{uri: this.state.wvURI}}
+              onNavigationStateChange={this.handleWebViewNavigationStateChange}
+              onLoadEnd={syntheticEvent => {
+                ToastAndroid.show(
+                  this.state.wvURI + ' Loaded',
+                  ToastAndroid.SHORT,
+                );
+                this.setState({mountWV: false});
+              }}
+            />
+          </View>
+        )}
       </SafeAreaView>
     );
   }
+
+  buttonsData = [
+    {
+      buttonText: (
+        <Text>
+          <FontAwesome icon={SolidIcons.powerOff} />
+          {' Open computer!'}
+        </Text>
+      ),
+      style: {backgroundColor: '#ffc107'},
+      styleDisabled: {backgroundColor: '#ffc10765'},
+      textStyle: {color: 'black'},
+      onPress: this.openComputer,
+    },
+    {
+      buttonText: (
+        <Text>
+          <FontAwesome icon={SolidIcons.eye} />
+          {' Open lights!'}
+        </Text>
+      ),
+      style: {backgroundColor: '#28a745'},
+      styleDisabled: {backgroundColor: '#28a74565'},
+      textStyle: {color: 'white'},
+      onPress: this.openLights,
+    },
+    {
+      buttonText: (
+        <Text>
+          <FontAwesome icon={SolidIcons.eyeSlash} />
+          {' Close lights!'}
+        </Text>
+      ),
+      style: {backgroundColor: '#dc3545'},
+      styleDisabled: {backgroundColor: '#dc354565'},
+      textStyle: {color: 'white'},
+      onPress: this.closeLights,
+    },
+  ];
 }
 
 const styles = StyleSheet.create({
