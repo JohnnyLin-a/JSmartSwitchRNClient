@@ -30,7 +30,6 @@ class SmartSwitch extends Component {
   };
 
   onPressButton = index => {
-    console.log('onPressButton ' + index);
     let requestStatus = [...this.props.requestStatus];
     requestStatus[index] = TextStatus.PROCESSING;
     this.props.updateSSRequestStatus(requestStatus);
@@ -46,9 +45,8 @@ class SmartSwitch extends Component {
     }
   };
 
-  onMessage = (index, event) => {
-    if (event.nativeEvent.data === 'loaded') {
-      console.log('loaded page');
+  onMessage = (index, syntheticEvent) => {
+    if (syntheticEvent.nativeEvent.data === 'loaded') {
       let mountWV = [...this.props.mountWV];
       mountWV[index] = false;
       this.props.updateSSMountWV(mountWV);
@@ -56,6 +54,15 @@ class SmartSwitch extends Component {
       requestStatus[index] = TextStatus.DONE;
       this.props.updateSSRequestStatus(requestStatus);
     }
+  };
+
+  resetToIdle = index => {
+    let requestStatus = [...this.props.requestStatus];
+    requestStatus[index] = TextStatus.IDLE;
+    this.props.updateSSRequestStatus(requestStatus);
+    let requestSuccess = [...this.props.requestSuccess];
+    requestSuccess[index] = true;
+    this.props.updateSSRequestSuccess(requestSuccess);
   };
 
   render() {
@@ -93,7 +100,10 @@ class SmartSwitch extends Component {
                       this.props.requestSuccess[index]
                         ? this.props.requestSuccess[index]
                         : false
-                    }>
+                    }
+                    onDoneCallback={() => {
+                      this.resetToIdle(index);
+                    }}>
                     {buttonData.buttonText}
                   </TextWithStatus>
                 </ColoredButton>
