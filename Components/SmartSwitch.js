@@ -20,11 +20,6 @@ import {
 } from '../actions/SmartSwitchStatusActions';
 
 class SmartSwitch extends Component {
-  componentDidMount = () => {
-    console.log('componentDidMount', this.props);
-    console.log('State at componentDidMount', this.state);
-  };
-
   networkRequest = index => {
     let requestSuccess = [...this.props.requestSuccess];
     requestSuccess[index] = true;
@@ -40,9 +35,6 @@ class SmartSwitch extends Component {
     requestStatus[index] = TextStatus.PROCESSING;
     this.props.updateSSRequestStatus(requestStatus);
     this.networkRequest(index);
-    // this.setState({requestStatus: status}, () => {
-    //   this.networkRequest(index);
-    // });
   };
 
   onHttpError = (index, syntheticEvent) => {
@@ -51,23 +43,21 @@ class SmartSwitch extends Component {
       let requestSuccess = [...this.props.requestSuccess];
       requestSuccess[index] = false;
       this.props.updateSSRequestSuccess(requestSuccess);
-      // this.setState({success: success});
     }
   };
 
-  onMessage = event => {
-    console.log(event);
-    // let mountWV = [].concat(this.state.mountWV);
-    // mountWV[index] = false;
-    // let status = [].concat(this.state.requestStatus);
-    // status[index] = TextStatus.DONE;
-    // this.setState({
-    //   mountWV: mountWV,
-    //   requestStatus: status,
-    // });
+  onMessage = (index, event) => {
+    if (event.nativeEvent.data === 'loaded') {
+      console.log('loaded page');
+      let mountWV = [...this.props.mountWV];
+      mountWV[index] = false;
+      this.props.updateSSMountWV(mountWV);
+      let requestStatus = [...this.props.requestStatus];
+      requestStatus[index] = TextStatus.DONE;
+      this.props.updateSSRequestStatus(requestStatus);
+    }
   };
 
-  // Maybe consider using redux for this state
   render() {
     return (
       <SafeAreaView style={styles.mainContainer}>
@@ -95,19 +85,29 @@ class SmartSwitch extends Component {
                   <TextWithStatus
                     style={buttonData.textStyle}
                     status={
-                      this.props.requestStatus.includes(index)
+                      this.props.requestStatus[index]
                         ? this.props.requestStatus[index]
                         : TextStatus.IDLE
+                    }
+                    success={
+                      this.props.requestSuccess[index]
+                        ? this.props.requestSuccess[index]
+                        : false
                     }>
                     {buttonData.buttonText}
                   </TextWithStatus>
                 </ColoredButton>
-                {this.props.mountWV.includes(index) && (
+                {this.props.mountWV[index] && (
                   <View style={{height: 0, width: 0}}>
                     <WebView
                       key={'webview' + index}
                       source={{uri: buttonData.URI}}
-                      onMessage={this.onMessage}
+                      onMessage={event => {
+                        this.onMessage(index, event);
+                      }}
+                      injectedJavaScript={
+                        "(function() {window.ReactNativeWebView.postMessage('loaded');})();"
+                      }
                       onHttpError={syntheticEvent => {
                         this.onHttpError(index, syntheticEvent);
                       }}
