@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Animated, Easing, View} from 'react-native';
+import {Animated, Easing} from 'react-native';
 import FontAwesome from 'react-native-fontawesome';
 
 class FontAwesomeSpin extends Component {
