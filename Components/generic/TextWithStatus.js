@@ -10,11 +10,6 @@ export const status = {
 };
 
 export default class TextWithStatus extends Component {
-  state = {
-    status: status.IDLE,
-    success: false,
-  };
-
   resetToIdleTimer = () => {
     if (this.props.onDoneCallback) {
       setTimeout(() => {
@@ -24,37 +19,27 @@ export default class TextWithStatus extends Component {
   };
 
   componentDidUpdate = prevProps => {
-    if (
-      prevProps.status !== this.state.status ||
-      prevProps.success !== this.state.success
-    ) {
-      this.setState(
-        {status: this.props.status, success: this.props.success},
-        () => {
-          if (this.state.status === status.DONE) {
-            this.resetToIdleTimer();
-          }
-        },
-      );
+    if (this.props.status === status.DONE) {
+      this.resetToIdleTimer();
     }
   };
 
   render() {
     return (
       <View>
-        {this.state.status === status.IDLE && (
+        {this.props.status === status.IDLE && (
           <Text style={[styles.textStyle, this.props.style]}>
             {this.props.children}
           </Text>
         )}
-        {this.state.status === status.PROCESSING && (
+        {this.props.status === status.PROCESSING && (
           <FontAwesomeSpin
             style={[styles.textStyle, this.props.style]}
             icon={SolidIcons.syncAlt}
           />
         )}
-        {this.state.status === status.DONE &&
-          (this.state.success ? (
+        {this.props.status === status.DONE &&
+          (this.props.success ? (
             <Text style={[styles.textStyle, this.props.style]}>
               <FontAwesome icon={SolidIcons.check} />
             </Text>
