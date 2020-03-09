@@ -1,13 +1,23 @@
-import {UPDATE_SS_TEXT_STATUS} from '../actionTypes';
+import {
+  UPDATE_SS_REQUEST_STATUS,
+  UPDATE_SS_REQUEST_SUCCESS,
+  UPDATE_SS_MOUNT_WV,
+} from '../actionTypes';
 
 const initialState = {
   requestStatus: [],
+  requestSuccess: [],
+  mountWV: [],
 };
 
 const smartSwitchReducer = (state = initialState, action) => {
   switch (action.type) {
-    case UPDATE_SS_TEXT_STATUS:
+    case UPDATE_SS_REQUEST_STATUS:
       return {...state, requestStatus: action.payload};
+    case UPDATE_SS_REQUEST_SUCCESS:
+      return {...state, requestSuccess: action.payload};
+    case UPDATE_SS_MOUNT_WV:
+      return {...state, mountWV: action.payload};
     default:
       return state;
   }
