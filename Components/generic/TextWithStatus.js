@@ -14,10 +14,13 @@ export default class TextWithStatus extends Component {
     status: status.IDLE,
     success: false,
   };
+
   resetToIdleTimer = () => {
-    setTimeout(() => {
-      this.setState({status: status.IDLE, success: false});
-    }, 1000);
+    if (this.props.onDoneCallback) {
+      setTimeout(() => {
+        this.props.onDoneCallback();
+      }, 1000);
+    }
   };
 
   componentDidUpdate = prevProps => {
