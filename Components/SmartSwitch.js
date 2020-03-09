@@ -1,46 +1,35 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {View, SafeAreaView, StyleSheet, Text, ToastAndroid} from 'react-native';
+import {View, SafeAreaView, StyleSheet, Text} from 'react-native';
 import TitleHeader from './generic/TitleHeader';
 import ColoredButton from './generic/ColoredButton';
 import {
   responsiveHeight,
   responsiveWidth,
+  responsiveFontSize,
 } from 'react-native-responsive-dimensions';
-import {
-  openComputer,
-  openLights,
-  closeLights,
-} from '../Helpers/Network/ApiRequest';
 import FontAwesome, {SolidIcons} from 'react-native-fontawesome';
 import Config from 'react-native-config';
 import {WebView} from 'react-native-webview';
-import ColorfulModal from './generic/ColorfulModal';
+import TextWithStatus, {status as TextStatus} from './generic/TextWithStatus';
+import {connect} from 'react-redux';
 
-export default class SmartSwitch extends Component {
-  state = {wvURI: null, mountWV: false};
+class SmartSwitch extends Component {
+  state = {
+    mountWV: [],
+    requestStatus: [],
+    success: [],
+  };
 
-  openComputer = () => {
+  networkRequest = index => {
+    let mountWV = [...this.state.mountWV];
+    mountWV[index] = true;
     this.setState({
-      wvURI: Config.SERVER_URL + 'api/v1/openMyComputer.php',
-      mountWV: true,
+      mountWV: mountWV,
     });
   };
 
-  openLights = () => {
-    this.setState({
-      wvURI: Config.SERVER_URL + 'api/v1/controlLights.php' + '?control=open',
-      mountWV: true,
-    });
-  };
-
-  closeLights = () => {
-    this.setState({
-      wvURI: Config.SERVER_URL + 'api/v1/controlLights.php' + '?control=close',
-      mountWV: true,
-    });
-  };
-
+  // Maybe consider using redux for this state
   render() {
     return (
       <SafeAreaView style={styles.mainContainer}>
@@ -58,33 +47,57 @@ export default class SmartSwitch extends Component {
         <View style={[{flex: 8}, styles.buttonsContainer]} key="buttons">
           {this.buttonsData.map((buttonData, index) => {
             return (
-              <ColoredButton
-                key={'button' + index}
-                style={[buttonData.style, styles.buttonGeneric]}
-                styleDisabled={[buttonData.styleDisabled, styles.buttonGeneric]}
-                buttonText={buttonData.buttonText}
-                textStyle={buttonData.textStyle}
-                onPress={buttonData.onPress}
-              />
+              <View key={'ButtonComponent' + index}>
+                <ColoredButton
+                  key={'button' + index}
+                  style={[buttonData.style, styles.buttonGeneric]}
+                  onPress={() => {
+                    let status = [].concat(this.state.requestStatus);
+                    status[index] = TextStatus.PROCESSING;
+                    this.setState({requestStatus: status}, () => {
+                      this.networkRequest(index);
+                    });
+                  }}>
+                  <TextWithStatus
+                    style={buttonData.textStyle}
+                    status={
+                      this.state.requestStatus[index]
+                        ? this.state.requestStatus[index]
+                        : TextStatus.IDLE
+                    }>
+                    {buttonData.buttonText}
+                  </TextWithStatus>
+                </ColoredButton>
+                {this.state.mountWV[index] && (
+                  <View style={{height: 0, width: 0}}>
+                    <WebView
+                      key={'webview' + index}
+                      source={{uri: buttonData.URI}}
+                      onLoadEnd={syntheticEvent => {
+                        let mountWV = [].concat(this.state.mountWV);
+                        mountWV[index] = false;
+                        let status = [].concat(this.state.requestStatus);
+                        status[index] = TextStatus.DONE;
+                        this.setState({
+                          mountWV: mountWV,
+                          requestStatus: status,
+                        });
+                      }}
+                      onHttpError={syntheticEvent => {
+                        const {nativeEvent} = syntheticEvent;
+                        if (nativeEvent.statusCode !== 200) {
+                          let success = [].concat(this.state.success);
+                          success[index] = false;
+                          this.setState({success: success});
+                        }
+                      }}
+                    />
+                  </View>
+                )}
+              </View>
             );
           })}
         </View>
-        {this.state.mountWV && (
-          <View style={{height: 0}}>
-            <WebView
-              ref={ref => (this.webview = ref)}
-              source={{uri: this.state.wvURI}}
-              onNavigationStateChange={this.handleWebViewNavigationStateChange}
-              onLoadEnd={syntheticEvent => {
-                ToastAndroid.show(
-                  this.state.wvURI + ' Loaded',
-                  ToastAndroid.SHORT,
-                );
-                this.setState({mountWV: false});
-              }}
-            />
-          </View>
-        )}
       </SafeAreaView>
     );
   }
@@ -98,9 +111,9 @@ export default class SmartSwitch extends Component {
         </Text>
       ),
       style: {backgroundColor: '#ffc107'},
-      styleDisabled: {backgroundColor: '#ffc10765'},
-      textStyle: {color: 'black'},
-      onPress: this.openComputer,
+      styleProcessing: {backgroundColor: '#ffc10765'},
+      textStyle: {color: 'black', fontSize: responsiveFontSize(3)},
+      URI: Config.SERVER_URL + 'api/v1/openMyComputer.php',
     },
     {
       buttonText: (
@@ -110,9 +123,9 @@ export default class SmartSwitch extends Component {
         </Text>
       ),
       style: {backgroundColor: '#28a745'},
-      styleDisabled: {backgroundColor: '#28a74565'},
-      textStyle: {color: 'white'},
-      onPress: this.openLights,
+      styleProcessing: {backgroundColor: '#28a74565'},
+      textStyle: {color: 'white', fontSize: responsiveFontSize(3)},
+      URI: Config.SERVER_URL + 'api/v1/controlLights.php' + '?control=open',
     },
     {
       buttonText: (
@@ -122,12 +135,14 @@ export default class SmartSwitch extends Component {
         </Text>
       ),
       style: {backgroundColor: '#dc3545'},
-      styleDisabled: {backgroundColor: '#dc354565'},
-      textStyle: {color: 'white'},
-      onPress: this.closeLights,
+      styleProcessing: {backgroundColor: '#dc354565'},
+      textStyle: {color: 'white', fontSize: responsiveFontSize(3)},
+      URI: Config.SERVER_URL + 'api/v1/controlLights.php' + '?control=close',
     },
   ];
 }
+
+export default connect()(SmartSwitch);
 
 const styles = StyleSheet.create({
   mainContainer: {
