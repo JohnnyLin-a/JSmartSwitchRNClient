@@ -20,28 +20,38 @@ import {
 } from '../actions/SmartSwitchStatusActions';
 
 class SmartSwitch extends Component {
-  networkRequest = index => {
+  _updateSSRequestSuccessSingleIndex = (index, success) => {
     let requestSuccess = [...this.props.requestSuccess];
-    requestSuccess[index] = true;
+    requestSuccess[index] = success;
     this.props.updateSSRequestSuccess(requestSuccess);
+  };
+
+  _updateSSMountWVSingleIndex = (index, mount) => {
     let mountWV = [...this.props.mountWV];
-    mountWV[index] = true;
+    mountWV[index] = mount;
     this.props.updateSSMountWV(mountWV);
   };
 
-  onPressButton = index => {
+  _updateSSRequestStatusSingleIndex = (index, status) => {
     let requestStatus = [...this.props.requestStatus];
-    requestStatus[index] = TextStatus.PROCESSING;
+    requestStatus[index] = status;
     this.props.updateSSRequestStatus(requestStatus);
+  };
+
+  networkRequest = index => {
+    this._updateSSRequestSuccessSingleIndex(index, true);
+    this._updateSSMountWVSingleIndex(index, true);
+  };
+
+  onPressButton = index => {
+    this._updateSSRequestStatusSingleIndex(index, TextStatus.PROCESSING);
     this.networkRequest(index);
   };
 
   onHttpError = (index, syntheticEvent) => {
     const {nativeEvent} = syntheticEvent;
     if (nativeEvent.statusCode !== 200) {
-      let requestSuccess = [...this.props.requestSuccess];
-      requestSuccess[index] = false;
-      this.props.updateSSRequestSuccess(requestSuccess);
+      this._updateSSRequestSuccessSingleIndex(index, false);
     }
   };
 
