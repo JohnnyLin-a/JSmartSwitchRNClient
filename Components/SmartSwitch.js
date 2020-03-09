@@ -13,20 +13,58 @@ import Config from 'react-native-config';
 import {WebView} from 'react-native-webview';
 import TextWithStatus, {status as TextStatus} from './generic/TextWithStatus';
 import {connect} from 'react-redux';
+import {
+  updateSSMountWV,
+  updateSSRequestStatus,
+  updateSSRequestSuccess,
+} from '../actions/SmartSwitchStatusActions';
 
 class SmartSwitch extends Component {
-  state = {
-    mountWV: [],
-    requestStatus: [],
-    success: [],
+  componentDidMount = () => {
+    console.log('componentDidMount', this.props);
+    console.log('State at componentDidMount', this.state);
   };
 
   networkRequest = index => {
-    let mountWV = [...this.state.mountWV];
+    let requestSuccess = [...this.props.requestSuccess];
+    requestSuccess[index] = true;
+    this.props.updateSSRequestSuccess(requestSuccess);
+    let mountWV = [...this.props.mountWV];
     mountWV[index] = true;
-    this.setState({
-      mountWV: mountWV,
-    });
+    this.props.updateSSMountWV(mountWV);
+  };
+
+  onPressButton = index => {
+    console.log('onPressButton ' + index);
+    let requestStatus = [...this.props.requestStatus];
+    requestStatus[index] = TextStatus.PROCESSING;
+    this.props.updateSSRequestStatus(requestStatus);
+    this.networkRequest(index);
+    // this.setState({requestStatus: status}, () => {
+    //   this.networkRequest(index);
+    // });
+  };
+
+  onHttpError = (index, syntheticEvent) => {
+    const {nativeEvent} = syntheticEvent;
+    if (nativeEvent.statusCode !== 200) {
+      let requestSuccess = [...this.props.requestSuccess];
+      requestSuccess[index] = false;
+      this.props.updateSSRequestSuccess(requestSuccess);
+      // this.setState({success: success});
+    }
+  };
+
+  onMessage = event => {
+    console.log(event);
+    // let mountWV = [].concat(this.state.mountWV);
+    // mountWV[index] = false;
+    // let status = [].concat(this.state.requestStatus);
+    // status[index] = TextStatus.DONE;
+    // this.setState({
+    //   mountWV: mountWV,
+    //   requestStatus: status,
+    // });
   };
 
   // Maybe consider using redux for this state
@@ -52,44 +90,26 @@ class SmartSwitch extends Component {
                   key={'button' + index}
                   style={[buttonData.style, styles.buttonGeneric]}
                   onPress={() => {
-                    let status = [].concat(this.state.requestStatus);
-                    status[index] = TextStatus.PROCESSING;
-                    this.setState({requestStatus: status}, () => {
-                      this.networkRequest(index);
-                    });
+                    this.onPressButton(index);
                   }}>
                   <TextWithStatus
                     style={buttonData.textStyle}
                     status={
-                      this.state.requestStatus[index]
-                        ? this.state.requestStatus[index]
+                      this.props.requestStatus.includes(index)
+                        ? this.props.requestStatus[index]
                         : TextStatus.IDLE
                     }>
                     {buttonData.buttonText}
                   </TextWithStatus>
                 </ColoredButton>
-                {this.state.mountWV[index] && (
+                {this.props.mountWV.includes(index) && (
                   <View style={{height: 0, width: 0}}>
                     <WebView
                       key={'webview' + index}
                       source={{uri: buttonData.URI}}
-                      onLoadEnd={syntheticEvent => {
-                        let mountWV = [].concat(this.state.mountWV);
-                        mountWV[index] = false;
-                        let status = [].concat(this.state.requestStatus);
-                        status[index] = TextStatus.DONE;
-                        this.setState({
-                          mountWV: mountWV,
-                          requestStatus: status,
-                        });
-                      }}
+                      onMessage={this.onMessage}
                       onHttpError={syntheticEvent => {
-                        const {nativeEvent} = syntheticEvent;
-                        if (nativeEvent.statusCode !== 200) {
-                          let success = [].concat(this.state.success);
-                          success[index] = false;
-                          this.setState({success: success});
-                        }
+                        this.onHttpError(index, syntheticEvent);
                       }}
                     />
                   </View>
@@ -142,7 +162,30 @@ class SmartSwitch extends Component {
   ];
 }
 
-export default connect()(SmartSwitch);
+const mapStateToProps = state => {
+  return {
+    mountWV: state.smartSwitch.mountWV,
+    requestStatus: state.smartSwitch.requestStatus,
+    requestSuccess: state.smartSwitch.requestSuccess,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    updateSSMountWV: payload => {
+      dispatch(updateSSMountWV(payload));
+    },
+    updateSSRequestStatus: payload => {
+      dispatch(updateSSRequestStatus(payload));
+    },
+    updateSSRequestSuccess: payload => {
+      dispatch(updateSSRequestSuccess(payload));
+    },
+  };
+};
+
+// eslint-disable-next-line prettier/prettier
+export default connect(mapStateToProps, mapDispatchToProps)(SmartSwitch);
 
 const styles = StyleSheet.create({
   mainContainer: {
