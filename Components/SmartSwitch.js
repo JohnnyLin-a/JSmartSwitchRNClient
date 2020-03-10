@@ -57,22 +57,14 @@ class SmartSwitch extends Component {
 
   onMessage = (index, syntheticEvent) => {
     if (syntheticEvent.nativeEvent.data === 'loaded') {
-      let mountWV = [...this.props.mountWV];
-      mountWV[index] = false;
-      this.props.updateSSMountWV(mountWV);
-      let requestStatus = [...this.props.requestStatus];
-      requestStatus[index] = TextStatus.DONE;
-      this.props.updateSSRequestStatus(requestStatus);
+      this._updateSSMountWVSingleIndex(index, false);
+      this._updateSSRequestStatusSingleIndex(index, TextStatus.DONE);
     }
   };
 
   resetToIdle = index => {
-    let requestStatus = [...this.props.requestStatus];
-    requestStatus[index] = TextStatus.IDLE;
-    this.props.updateSSRequestStatus(requestStatus);
-    let requestSuccess = [...this.props.requestSuccess];
-    requestSuccess[index] = true;
-    this.props.updateSSRequestSuccess(requestSuccess);
+    this._updateSSRequestStatusSingleIndex(index, TextStatus.IDLE);
+    this._updateSSRequestSuccessSingleIndex(index, true);
   };
 
   render() {
