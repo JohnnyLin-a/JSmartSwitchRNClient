@@ -94,8 +94,15 @@ class SmartSwitch extends Component {
             return (
               <View key={'ButtonComponent' + index}>
                 <ColoredButton
+                  disabled={
+                    this.props.requestStatus[index] === TextStatus.PROCESSING
+                  }
                   key={'button' + index}
                   style={[buttonData.style, styles.buttonGeneric]}
+                  styleDisabled={[
+                    buttonData.styleProcessing,
+                    styles.buttonGeneric,
+                  ]}
                   onPress={() => {
                     this.onPressButton(index);
                   }}>

@@ -9,8 +9,14 @@ export default class ColoredButton extends Component {
 
   render() {
     return (
-      <TouchableWithoutFeedback onPress={this.onPressButton}>
-        <View style={[this.props.style, styles.genericTouchable]}>
+      <TouchableWithoutFeedback
+        onPress={this.onPressButton}
+        disabled={this.props.disabled}>
+        <View
+          style={[
+            this.props.disabled ? this.props.styleDisabled : this.props.style,
+            styles.genericTouchable,
+          ]}>
           {this.props.children}
         </View>
       </TouchableWithoutFeedback>
