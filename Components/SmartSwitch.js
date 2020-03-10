@@ -19,35 +19,81 @@ import {
   updateSSRequestSuccess,
 } from '../actions/SmartSwitchStatusActions';
 
+/**
+ * Component for showing the main page of the Smart Switch
+ *
+ * @example
+ * return (
+ *  <SmartSwitch />
+ * )
+ */
 class SmartSwitch extends Component {
+  /* No propTypes for this component */
+
+  /**
+   * Update RequestSuccess redux state at index from boolean value
+   *
+   * @param {number} index
+   * @param {boolean} success
+   */
   _updateSSRequestSuccessSingleIndex = (index, success) => {
     let requestSuccess = [...this.props.requestSuccess];
     requestSuccess[index] = success;
     this.props.updateSSRequestSuccess(requestSuccess);
   };
 
+  /**
+   * Update MountWebView redux state at index from boolean value
+   *
+   * @param {number} index
+   * @param {boolean} mount
+   */
   _updateSSMountWVSingleIndex = (index, mount) => {
     let mountWV = [...this.props.mountWV];
     mountWV[index] = mount;
     this.props.updateSSMountWV(mountWV);
   };
 
+  /**
+   * Update RequestStatus redux state at index from TextStatus value
+   *
+   * @param {number} index
+   * @param {string} status
+   */
   _updateSSRequestStatusSingleIndex = (index, status) => {
     let requestStatus = [...this.props.requestStatus];
     requestStatus[index] = status;
     this.props.updateSSRequestStatus(requestStatus);
   };
 
+  /**
+   * Set redux state for RequestSuccess to true and mounts the WebView to make the network request at index
+   *
+   * @param {number} index
+   */
   networkRequest = index => {
     this._updateSSRequestSuccessSingleIndex(index, true);
     this._updateSSMountWVSingleIndex(index, true);
   };
 
+  /**
+   * Handles button press for button index
+   * Set redux state RequestStatus to PROCESSING, then makes the network request
+   *
+   * @param {number} index
+   */
   onPressButton = index => {
     this._updateSSRequestStatusSingleIndex(index, TextStatus.PROCESSING);
     this.networkRequest(index);
   };
 
+  /**
+   * Handles http errors when processing network request
+   * Check if http code not 200, then set redux RequestSuccess to false at index
+   *
+   * @param {number} index
+   * @param {Object} syntheticEvent
+   */
   onHttpError = (index, syntheticEvent) => {
     const {nativeEvent} = syntheticEvent;
     if (nativeEvent.statusCode !== 200) {
@@ -55,6 +101,14 @@ class SmartSwitch extends Component {
     }
   };
 
+  /**
+   * Execute when network request is complete
+   * Check if the message received from WebView is 'loaded',
+   * then unmount the webview at index, set RequestStatus to 'DONE'.
+   *
+   * @param {number} index
+   * @param {Object} syntheticEvent
+   */
   onMessage = (index, syntheticEvent) => {
     if (syntheticEvent.nativeEvent.data === 'loaded') {
       this._updateSSMountWVSingleIndex(index, false);
@@ -62,11 +116,21 @@ class SmartSwitch extends Component {
     }
   };
 
+  /**
+   * Reset RequestStatus to 'IDLE' at index,
+   * then set back RequestSuccess back to true (default) at index
+   *
+   * @param {number} index
+   */
   resetToIdle = index => {
     this._updateSSRequestStatusSingleIndex(index, TextStatus.IDLE);
     this._updateSSRequestSuccessSingleIndex(index, true);
   };
 
+  /**
+   * Render SmartSwitch view
+   * Includes TitleHeader, ColoredButtons to render
+   */
   render() {
     return (
       <SafeAreaView style={styles.mainContainer}>
@@ -181,6 +245,11 @@ class SmartSwitch extends Component {
   ];
 }
 
+/**
+ * Map redux state to props
+ * Maps mountWV, requestStatus and requestSuccess to props
+ * @param {Object} state
+ */
 const mapStateToProps = state => {
   return {
     mountWV: state.smartSwitch.mountWV,
@@ -189,6 +258,12 @@ const mapStateToProps = state => {
   };
 };
 
+/**
+ * Map store dispatch functions to props
+ * Map updateSSMountWV, updateSSRequestStatus and updateSSRequestSuccess to props
+ *
+ * @param {Function} dispatch
+ */
 const mapDispatchToProps = dispatch => {
   return {
     updateSSMountWV: payload => {
