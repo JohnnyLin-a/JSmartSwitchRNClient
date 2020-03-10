@@ -2,7 +2,19 @@ import React, {Component} from 'react';
 import {Text, SafeAreaView, StyleSheet} from 'react-native';
 import {responsiveFontSize} from 'react-native-responsive-dimensions';
 
+/**
+ * Component for TitleHeader
+ *
+ * @example
+ * const title = <Text>Title</Title>
+ * return (
+ *  <TitleHeader title={title} />
+ * )
+ */
 class TitleHeader extends Component {
+  /**
+   * render view for TitleHeader
+   */
   render() {
     return (
       <SafeAreaView style={styles.container}>

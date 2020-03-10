@@ -13,6 +13,9 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 
+/**
+ * Component not used in the app (yet).
+ */
 export default class ColorfulModal extends Component {
   state = {modalVisible: null};
 

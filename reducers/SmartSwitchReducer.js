@@ -10,6 +10,11 @@ const initialState = {
   mountWV: [],
 };
 
+/**
+ * SmartSwitch related redux reducer
+ * @param {Object} state
+ * @param {Object} action
+ */
 const smartSwitchReducer = (state = initialState, action) => {
   switch (action.type) {
     case UPDATE_SS_REQUEST_STATUS:

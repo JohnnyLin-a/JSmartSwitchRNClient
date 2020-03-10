@@ -2,6 +2,9 @@ import React, {Component} from 'react';
 import {Animated, Easing} from 'react-native';
 import FontAwesome from 'react-native-fontawesome';
 
+/**
+ * Component taken from react-native-fontawesome node_module root, and updated for it to work.
+ */
 class FontAwesomeSpin extends Component {
   spinValue = new Animated.Value(0);
 
