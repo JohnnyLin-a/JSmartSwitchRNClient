@@ -14,7 +14,13 @@ import {
 } from 'react-native-responsive-dimensions';
 
 export default class ColorfulModal extends Component {
-  state = {modalVisible: null, modalBodyComponent: <View />};
+  state = {modalVisible: null};
+
+  componentDidMount = () => {
+    if (this.props.modalVisible) {
+      this.setState({modalVisible: this.props.modalVisible});
+    }
+  };
 
   componentDidUpdate = prevProps => {
     if (prevProps.modalVisible !== this.props.modalVisible) {
