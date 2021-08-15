@@ -10,25 +10,6 @@ export const status = {
   DONE: 'DONE',
 };
 
-TextWithStatus.propTypes = {
-  /**
-   * Callback function when status is DONE
-   */
-  onDoneCallback: PropTypes.func,
-  /**
-   * Style for Text
-   */
-  style: PropTypes.object,
-  /**
-   * Success boolean (Ex: button action's result)
-   */
-  success: PropTypes.bool,
-  /**
-   * Status enum ('IDLE', 'PROCESSING', 'DONE')
-   */
-  status: PropTypes.string,
-};
-
 /**
  * Component for Text that reacts to different status (IDLE, PROCESSING, DONE)
  *
@@ -47,7 +28,7 @@ TextWithStatus.propTypes = {
  *   </TextWithStatus>
  * )
  */
-export default class TextWithStatus extends Component {
+class TextWithStatus extends Component {
   /**
    * execute onDoneCallback (if supplied) after 1 second delay
    */
@@ -110,3 +91,24 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 });
+
+TextWithStatus.propTypes = {
+  /**
+   * Callback function when status is DONE
+   */
+  onDoneCallback: PropTypes.func,
+  /**
+   * Style for Text
+   */
+  style: PropTypes.object,
+  /**
+   * Success boolean (Ex: button action's result)
+   */
+  success: PropTypes.bool,
+  /**
+   * Status enum ('IDLE', 'PROCESSING', 'DONE')
+   */
+  status: PropTypes.string,
+};
+
+export default TextWithStatus;

@@ -3,24 +3,6 @@ import {TouchableWithoutFeedback, StyleSheet, View} from 'react-native';
 import {responsiveHeight} from 'react-native-responsive-dimensions';
 import PropTypes from 'prop-types';
 
-ColoredButton.propTypes = {
-  /**
-   * onPress function
-   */
-  onPress: PropTypes.func,
-  /**
-   * button disabled (or not)
-   */
-  disabled: PropTypes.bool,
-  /**
-   * style for the button
-   */
-  style: PropTypes.object,
-  /**
-   * style for the button when disabled
-   */
-  styleDisabled: PropTypes.object,
-};
 /**
  * Component ColoredButton, makes a Touchable look like a button
  *
@@ -39,7 +21,7 @@ ColoredButton.propTypes = {
  *   </ColoredButton>
  * }
  */
-export default class ColoredButton extends Component {
+class ColoredButton extends Component {
   /**
    * render ColoredButton view
    */
@@ -66,3 +48,24 @@ const styles = StyleSheet.create({
     height: responsiveHeight(10),
   },
 });
+
+ColoredButton.propTypes = {
+  /**
+   * onPress function
+   */
+  onPress: PropTypes.func,
+  /**
+   * button disabled (or not)
+   */
+  disabled: PropTypes.bool,
+  /**
+   * style for the button
+   */
+  style: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  /**
+   * style for the button when disabled
+   */
+  styleDisabled: PropTypes.array,
+};
+
+export default ColoredButton;
