@@ -1,5 +1,5 @@
-import axios from 'axios';
 import Config from 'react-native-config';
+import https from 'https';
 
 /**
  * Send a GET Request through axios with URLEndpoint
@@ -7,15 +7,25 @@ import Config from 'react-native-config';
  * @param {string} URLEndpoint
  */
 const sendGET = URLEndpoint => {
-  return axios
-    .get(URLEndpoint)
-    .then(response => {
-      console.log(response);
-      return response;
+  https
+    .get(URLEndpoint, res => {
+      let data = '';
+
+      res.on('data', chunk => {
+        data += chunk;
+      });
+
+      res.on('end', () => {
+        try {
+          let parsedData = JSON.parse(data);
+          return parsedData;
+        } catch (e) {
+          return {success: false};
+        }
+      });
     })
-    .catch(error => {
-      console.log(error);
-      throw error;
+    .on('error', () => {
+      return {success: false};
     });
 };
 
@@ -52,7 +62,7 @@ const sendGET = URLEndpoint => {
  * Send GET Request to 'api/v1/openMyComputer.php' endpoint
  */
 export const openComputer = () => {
-  return sendGET(Config.SERVER_URL + 'api/v1/openMyComputer.php');
+  return sendGET(Config.SERVER_URL + '/api/v1/openMyComputer.php');
 };
 
 /**
@@ -60,7 +70,7 @@ export const openComputer = () => {
  */
 export const openLights = () => {
   return sendGET(
-    Config.SERVER_URL + 'api/v1/controlLights.php' + '?control=open',
+    Config.SERVER_URL + '/api/v1/controlLights.php' + '?control=open',
   );
 };
 
@@ -69,6 +79,6 @@ export const openLights = () => {
  */
 export const closeLights = () => {
   return sendGET(
-    Config.SERVER_URL + 'api/v1/controlLights.php' + '?control=close',
+    Config.SERVER_URL + '/api/v1/controlLights.php' + '?control=close',
   );
 };

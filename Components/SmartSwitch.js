@@ -10,7 +10,6 @@ import {
 } from 'react-native-responsive-dimensions';
 import FontAwesome, {SolidIcons} from 'react-native-fontawesome';
 import Config from 'react-native-config';
-import {WebView} from 'react-native-webview';
 import TextWithStatus, {status as TextStatus} from './generic/TextWithStatus';
 import {connect} from 'react-redux';
 import {
